@@ -152,11 +152,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 @keyframes fade { to { opacity: 1; } }
 
 /* scroll reveal (IntersectionObserver adds .in) */
-.reveal { opacity: 0; transform: translateY(44px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
 .reveal.in { opacity: 1; transform: none; }
-.reveal-clip { clip-path: inset(14% 14% 14% 14% round 24px); filter: saturate(0); transition: clip-path 1.2s var(--ease), filter 1.2s var(--ease); }
-.reveal-clip.in { clip-path: inset(0 0 0 0 round 0); filter: none; }
+.reveal-clip { opacity: 0; transition: opacity 0.7s var(--ease); }
+.reveal-clip.in { opacity: 1; }
 .no-js .reveal, .no-js .reveal-clip { opacity: 1; transform: none; clip-path: none; filter: none; }
+/* safety net: never leave content hidden if the observer does not fire (tools, print, odd browsers) */
+.reveal-all .reveal, .reveal-all .reveal-clip { opacity: 1; transform: none; }
 
 @supports (animation-timeline: view()) {
   .parallax { animation: para linear both; animation-timeline: view(); }
@@ -322,7 +324,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 /* ---------- footer ---------- */
 .site-footer { border-top: 1px solid var(--line); padding-top: 56px; padding-bottom: 40px; }
-.giant { font-family: var(--font-display); font-weight: 800; font-size: clamp(64px, 14vw, 200px); line-height: 0.9; letter-spacing: -0.045em; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.22); padding-top: 24px; user-select: none; }
+.giant { font-family: var(--font-display); font-weight: 800; font-size: clamp(40px, 10.5vw, 160px); line-height: 0.9; white-space: nowrap; letter-spacing: -0.045em; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.22); padding-top: 24px; user-select: none; }
 .giant span { display: inline-block; transition: transform 0.45s var(--ease), color 0.3s, -webkit-text-stroke-color 0.3s; }
 .giant span:hover { transform: translateY(-22px) rotate(-4deg); color: var(--accent); -webkit-text-stroke-color: var(--accent); }
 .foot-row { margin-top: 40px; display: flex; justify-content: space-between; align-items: center; gap: 24px; font-size: 13px; color: var(--muted-2); }
@@ -408,7 +410,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .timeline > li > ul li + li { margin-top: 6px; }
 .timeline > li > ul li::marker { color: var(--accent); }
 
-.cta-mail { display: inline-block; margin-top: 30px; font-family: var(--font-display); font-weight: 800; font-size: clamp(20px, 2.2vw, 30px); letter-spacing: -0.02em; border-bottom: 2px solid currentColor; padding-bottom: 4px; word-break: break-all; }
+.cta-mail { display: inline-block; margin-top: 30px; font-family: var(--font-display); font-weight: 800; font-size: clamp(13px, 3.7vw, 24px); letter-spacing: -0.02em; border-bottom: 2px solid currentColor; padding-bottom: 4px; max-width: 100%; overflow-wrap: anywhere; }
 .cta-links { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 10px; }
 .cta-links a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; background: var(--bg); color: var(--fg); font-weight: 600; font-size: 14px; transition: background 0.2s, color 0.2s; }
 .cta-links a:hover { background: var(--fg); color: var(--bg); }
@@ -434,7 +436,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .edu span { color: var(--muted); font-size: 14px; }
 .edu em { font-style: normal; font-family: var(--font-mono); font-size: 13px; color: var(--accent); }
 
-.board-hero { position: relative; border-radius: 26px; overflow: hidden; border: 1px solid var(--line); aspect-ratio: 3 / 2; }
+.board-hero { position: relative; border-radius: 26px; overflow: hidden; border: 1px solid var(--line); aspect-ratio: 1168 / 709; max-width: 1168px; margin-inline: auto; }
 .board-hero img { width: 100%; height: 100%; object-fit: cover; }
 .board-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 60px; align-items: start; padding-top: 56px; }
 .facts { display: grid; border-top: 1px solid rgba(255, 255, 255, 0.1); }
@@ -525,3 +527,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .steps-fill { transform: scaleX(1); }
   .timeline-fill { transform: scaleY(1); }
 }
+
+/* contact headline: sized so the longest word ("beginning?", "listening.") never overflows its column */
+.cta-h { font-size: clamp(32px, 4.5vw, 64px); line-height: 0.96; letter-spacing: -0.04em; font-weight: 800; }
+@media (max-width: 700px) { .cta-h { font-size: 9vw; } }

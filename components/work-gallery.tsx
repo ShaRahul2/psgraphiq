@@ -61,7 +61,7 @@ export default function WorkGallery() {
     <>
       <div className="section-head">
         <div>
-          <p className="eyebrow" style={{ marginBottom: 16 }}>[02] — The ideas, out in the world</p>
+          <p className="eyebrow" style={{ marginBottom: 16 }}>[01] — The ideas, out in the world</p>
           <h2 className="h-lg">
             Selected work<span className="accent">.</span>
           </h2>
@@ -110,7 +110,7 @@ export default function WorkGallery() {
       {lb && (
         <div className="lightbox" role="dialog" aria-modal="true" aria-label={`${lb.name} artwork`} onClick={(e) => e.target === e.currentTarget && close()}>
           <div className="lb-inner">
-            <div className="lb-media" style={{ background: lb.color, aspectRatio: lb.format === 'board' ? '3 / 2' : '1 / 1' }}>
+            <div className="lb-media" style={{ background: lb.color, aspectRatio: lb.format === 'board' ? '1168 / 709' : '1 / 1' }}>
               <img src={`/images/${lb.image}`} alt={lb.alt} />
             </div>
             <div>

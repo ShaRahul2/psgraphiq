@@ -189,7 +189,7 @@ export function Experience({ compact = false }: { compact?: boolean }) {
   return (
     <section className="wrap section split" id="experience">
       <div className="exp-side">
-        <p className="eyebrow">[{compact ? '05' : '02'}] — Where the work happened</p>
+        <p className="eyebrow">[{compact ? '03' : '02'}] — Where the work happened</p>
         <h2 className="h-md" style={{ marginTop: 18, fontSize: 'clamp(34px, 3.4vw, 50px)' }}>
           Agency, global media, <span className="accent" style={{ whiteSpace: 'nowrap' }}>in-house.</span>
         </h2>
@@ -247,7 +247,7 @@ export function Services() {
   return (
     <section className="wrap section" id="services" style={{ paddingTop: 60 }}>
       <div className="split" style={{ marginBottom: 48 }}>
-        <p className="eyebrow">[03] — What I do</p>
+        <p className="eyebrow">[02] — What I do</p>
         <h2 className="h-md reveal" style={{ maxWidth: 820 }}>Different formats. Always the same starting point.</h2>
       </div>
       <div className="grid-3">
@@ -311,7 +311,7 @@ export function AboutTeaser() {
         </div>
       </div>
       <div>
-        <p className="eyebrow" style={{ marginBottom: 22 }}>[06] — Hello, I’m Priyanka</p>
+        <p className="eyebrow" style={{ marginBottom: 22 }}>[04] — Hello, I’m Priyanka</p>
         <h2 className="h-md" style={{ fontSize: 'clamp(42px, 4.6vw, 64px)' }}>
           Curious mind.
           <br />
@@ -356,7 +356,7 @@ export function ContactBlock({ heading = true, showPhone = false }: { heading?: 
             Open to senior roles, retainers &amp; brand-system projects
           </p>
           {heading ? (
-            <h2 className="disp" style={{ fontSize: 'clamp(44px, 5.4vw, 76px)', lineHeight: 0.96, letterSpacing: '-0.04em', fontWeight: 800 }}>
+            <h2 className="disp cta-h">
               Got a brief?
               <br />
               Or a messy
@@ -364,7 +364,7 @@ export function ContactBlock({ heading = true, showPhone = false }: { heading?: 
               beginning?
             </h2>
           ) : (
-            <h1 className="disp" style={{ fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.94, letterSpacing: '-0.04em', fontWeight: 800 }}>
+            <h1 className="disp cta-h">
               Big idea?
               <br />
               Messy brief?

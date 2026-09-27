@@ -6,29 +6,6 @@ import { usePathname } from 'next/navigation';
 const prefersReduced = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/** Intro screen shown on a full page load; removed from the DOM once it has slid away. */
-export function Preloader() {
-  const [show, setShow] = useState(true);
-  useEffect(() => {
-    const t = window.setTimeout(() => setShow(false), prefersReduced() ? 0 : 2700);
-    return () => window.clearTimeout(t);
-  }, []);
-  if (!show) return null;
-  return (
-    <div className="preload" aria-hidden="true">
-      <div className="word">
-        ps<span className="accent">.</span>graphiq
-      </div>
-      <div className="plbar">
-        <span />
-      </div>
-      <div className="mono" style={{ fontSize: 11, letterSpacing: 3, color: 'var(--muted-2)' }}>
-        LOADING IDEAS WITH INTENT
-      </div>
-    </div>
-  );
-}
-
 /**
  * Site-wide motion layer: scroll progress, custom cursor, cursor spotlight,
  * scroll reveals, count-up numbers and magnetic buttons ([data-magnetic]).
@@ -131,13 +108,15 @@ export function Effects() {
           io.unobserve(el);
         });
       },
-      { threshold: 0.18, rootMargin: '0px 0px -40px 0px' },
+      { threshold: 0, rootMargin: '0px 0px 120px 0px' },
     );
     els.forEach((el) => {
       if (el.dataset.count && !reduced) el.textContent = '0';
       io.observe(el);
     });
-    return () => io.disconnect();
+    // Failsafe: reveal everything after a few seconds, e.g. for full-page capture tools.
+    const failsafe = window.setTimeout(() => document.documentElement.classList.add('reveal-all'), 4000);
+    return () => { io.disconnect(); window.clearTimeout(failsafe); };
   }, [pathname]);
 
   return (
