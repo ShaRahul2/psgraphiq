@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { projectIndex, projects, projectTotal, type Category } from '../lib/projects';
+import { projectIndex, projects, projectTotal, thumb, type Category } from '../lib/projects';
 import { ArrowUpRight, ChevronLeft, ChevronRight, Close } from './icons';
 
 const filters: ('All' | Category)[] = ['All', 'Identity', 'Campaign', 'Packaging', 'Product', 'Pitch'];
@@ -52,17 +52,32 @@ export default function WorkGallery() {
   const firstRun = useRef(true);
   useEffect(() => {
     if (firstRun.current) { firstRun.current = false; return; }
-    document.querySelectorAll('.work-grid .reveal-clip:not(.in)').forEach((el) => el.classList.add('in'));
+    document.querySelectorAll('.tiles .reveal-clip:not(.in)').forEach((el) => el.classList.add('in'));
+  }, [filter]);
+
+  // Tiles with a motion loop play only while on screen.
+  useEffect(() => {
+    const vids = Array.from(document.querySelectorAll<HTMLVideoElement>('.tile-video'));
+    if (!vids.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        const v = e.target as HTMLVideoElement;
+        if (e.isIntersecting) v.play().catch(() => {});
+        else v.pause();
+      });
+    }, { threshold: 0.35 });
+    vids.forEach((v) => io.observe(v));
+    return () => io.disconnect();
   }, [filter]);
 
   const lb = open >= 0 ? projects[open] : null;
 
   return (
     <>
-      <div className="section-head">
+      <div className="section-head work-head">
         <div>
-          <p className="eyebrow" style={{ marginBottom: 16 }}>[01] — The ideas, out in the world</p>
-          <h2 className="h-lg">
+          <p className="eyebrow" style={{ marginBottom: 10 }}>[01] — The ideas, out in the world · {projects.length} projects</p>
+          <h2 className="h-md" style={{ fontSize: 'clamp(30px, 3.2vw, 46px)' }}>
             Selected work<span className="accent">.</span>
           </h2>
         </div>
@@ -75,33 +90,35 @@ export default function WorkGallery() {
         </div>
       </div>
 
-      <div className="work-grid">
-        {shown.map((p, n) => {
+      <div className="tiles">
+        {shown.map((p) => {
           const i = projects.indexOf(p);
-          const featured = filter === 'All' && n === 0;
           return (
-            <article key={p.slug} className={`card${featured ? ' card-featured' : ''}${p.format === 'board' ? ' card-board' : ''}`} onPointerMove={tilt} onPointerLeave={untilt}>
-              <div className="card-media reveal-clip" style={{ background: p.color }}>
-                <img src={`/images/${p.image}`} alt={p.alt} loading="lazy" width={1080} height={1080} />
-                <div className="shine" />
-                <button type="button" className="card-hit" onClick={() => setOpen(i)} aria-label={`View ${p.name} artwork full screen`} />
-                <span className="pill" style={{ left: 18 }}>{projectIndex(p)} / {projectTotal}</span>
-                <span className="pill" style={{ right: 18 }}>{p.tag}</span>
-                <span className="view-tag" aria-hidden="true">VIEW ⤢</span>
-              </div>
-              <div className="card-meta">
-                <div>
-                  <h3 className="h-sm">{p.name}</h3>
-                  <p>{p.category} — {p.headline}</p>
-                </div>
-                {p.hasCaseStudy ? (
-                  <Link href={`/work/${p.slug}`} className="round-cta" aria-label={`Read the ${p.name} case study`}>
-                    <ArrowUpRight />
-                  </Link>
-                ) : (
-                  <Link href={`/work/${p.slug}`} className="soft-tag">PROJECT ↗</Link>
-                )}
-              </div>
+            <article key={p.slug} className="tile reveal-clip" onPointerMove={tilt} onPointerLeave={untilt} style={{ background: p.color }}>
+              <Link href={`/work/${p.slug}`} className="tile-link" data-cursor-label="View" aria-label={`${p.name} — ${p.category}`}>
+                <img
+                  src={`/images/${thumb(p.image)}`}
+                  srcSet={`/images/${thumb(p.image)} 760w, /images/${p.image} ${p.size[0]}w`}
+                  sizes="(max-width: 640px) 50vw, (max-width: 1080px) 50vw, 420px"
+                  alt={p.alt}
+                  loading={i < 3 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  width={p.size[0]}
+                  height={p.size[1]}
+                  style={{ objectPosition: `${p.focus ?? '50%'} 50%` }}
+                />
+                {p.video && <video className="tile-video" src={p.video} muted loop playsInline preload="none" aria-hidden="true" />}
+                <span className="shine" />
+                <span className="tile-shade" />
+                <span className="tile-info">
+                  <span className="mono tile-idx">{projectIndex(p)} / {projectTotal} — {p.tag}</span>
+                  <span className="tile-name">{p.name}</span>
+                </span>
+                <span className="tile-arrow" aria-hidden="true"><ArrowUpRight /></span>
+              </Link>
+              <button type="button" className="tile-zoom" onClick={() => setOpen(i)} aria-label={`Quick view: ${p.name}`}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></svg>
+              </button>
             </article>
           );
         })}
@@ -110,8 +127,8 @@ export default function WorkGallery() {
       {lb && (
         <div className="lightbox" role="dialog" aria-modal="true" aria-label={`${lb.name} artwork`} onClick={(e) => e.target === e.currentTarget && close()}>
           <div className="lb-inner">
-            <div className="lb-media" style={{ background: lb.color, aspectRatio: lb.format === 'board' ? '1168 / 709' : '1 / 1' }}>
-              <img src={`/images/${lb.image}`} alt={lb.alt} />
+            <div className="lb-media" style={{ background: lb.color, aspectRatio: `${lb.size[0]} / ${lb.size[1]}` }}>
+              <img src={`/images/${lb.image}`} alt={lb.alt} width={lb.size[0]} height={lb.size[1]} />
             </div>
             <div>
               <p className="eyebrow" style={{ marginBottom: 14 }}>{projectIndex(lb)} / {projectTotal} — {lb.tag}</p>

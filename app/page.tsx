@@ -7,10 +7,11 @@ export default function Home() {
     <main id="main" style={{ position: 'relative' }}>
       <Ambient />
       <Hero />
-      <NamedWork />
-      <section className="wrap" id="work" style={{ paddingTop: 40, paddingBottom: 100 }}>
+      {/* The work comes first — straight after the hero, like a designer's portfolio should. */}
+      <section className="wrap" id="work" style={{ position: 'relative', zIndex: 1, paddingTop: 8, paddingBottom: 80 }}>
         <WorkGallery />
       </section>
+      <NamedWork />
       <Services />
       <Experience compact />
       <AboutTeaser />

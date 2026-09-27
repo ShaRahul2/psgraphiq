@@ -45,7 +45,12 @@ export function Effects() {
       document.documentElement.style.setProperty('--my', `${e.pageY}px`);
       const target = e.target as Element | null;
       const interactive = target?.closest?.('a, button, [data-cursor]');
-      ring.current?.classList.toggle('is-hover', !!interactive);
+      const labelled = target?.closest?.('[data-cursor-label]');
+      if (ring.current) {
+        ring.current.classList.toggle('is-hover', !!interactive && !labelled);
+        ring.current.classList.toggle('is-view', !!labelled);
+        ring.current.dataset.label = labelled?.getAttribute('data-cursor-label') ?? '';
+      }
       if (!reduced) {
         const mag = target?.closest?.('[data-magnetic]') as HTMLElement | null;
         if (mag) {
