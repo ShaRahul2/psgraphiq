@@ -4,11 +4,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ArrowUpRight, Close, Menu } from './icons';
-import { INSTAGRAM } from '../lib/projects';
+import { links } from '../lib/projects';
 
-const links = [
+const navLinks = [
   { href: '/#work', label: 'Work', match: (p: string) => p.startsWith('/work') },
   { href: '/#services', label: 'Services', match: () => false },
+  { href: '/about#experience', label: 'Experience', match: () => false },
   { href: '/about', label: 'About', match: (p: string) => p === '/about' },
   { href: '/contact', label: 'Contact', match: (p: string) => p === '/contact' },
 ];
@@ -39,9 +40,9 @@ export default function SiteHeader() {
           <Link className="wordmark" href="/" aria-label="ps.graphiq — home">
             ps<span>.</span>graphiq
           </Link>
-          <span className="mono tagline">// BRAND &amp; VISUAL DESIGN</span>
+          <span className="mono tagline">// SENIOR GRAPHIC DESIGNER</span>
           <nav className="nav-links" aria-label="Main">
-            {links.slice(0, 3).map((l) => (
+            {navLinks.slice(0, 4).map((l) => (
               <Link key={l.href} href={l.href} className="nl" aria-current={l.match(pathname) ? 'page' : undefined}>
                 {l.label}
               </Link>
@@ -73,9 +74,11 @@ export default function SiteHeader() {
           </nav>
           <div className="menu-foot">
             <Link href="/work/meloni" onClick={() => setOpen(false)}>Meloni Kiss case study ↗</Link>
-            <a href={INSTAGRAM} target="_blank" rel="noreferrer">Instagram — @ps.graphiq ↗</a>
+            <a href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
+            <a href={links.behance} target="_blank" rel="noreferrer">Behance ↗</a>
+            <a href={links.instagram} target="_blank" rel="noreferrer">Instagram — {links.instagramHandle} ↗</a>
             <span className="mono" style={{ fontSize: 11, letterSpacing: 1.5, marginTop: 8 }}>
-              OPEN TO CREATIVE-LEADERSHIP ROLES &amp; SELECT FREELANCE BRIEFS
+              GURGAON · OPEN TO RELOCATION, REMOTE &amp; HYBRID ROLES
             </span>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { INSTAGRAM, services, steps } from '../lib/projects';
+import { experience, links, namedWork, profile, services, stats, steps } from '../lib/projects';
 import { ArrowDown, ArrowUpRight, Instagram, TextBadge } from './icons';
 import EnquiryForm from './enquiry-form';
 
@@ -39,7 +39,7 @@ export function Hero() {
       <div className="fitbox" style={{ position: 'relative', zIndex: 2 }}>
         <p className="eyebrow fade-in" style={{ marginBottom: 32 }}>
           <span className="dot pulse" />
-          Priyanka Sharma — 12+ yrs — available for select briefs
+          Priyanka Sharma — Senior Graphic Designer — Gurgaon · open to relocation
         </p>
         <h1 className="h-xl">
           <span className="line"><span>GOOD IDEAS.</span></span>
@@ -59,7 +59,7 @@ export function Hero() {
           </span>
         </p>
         <div className="hero-row fade-in">
-          <p>Ideas that still work once they leave the mood board. Identities, packaging and campaigns built on a reason.</p>
+          <p>Brand systems, campaigns and motion for real estate, global media and FMCG — from a blank page to live rollout.</p>
           <div className="btn-row">
             <a href="#work" className="btn btn-light" data-magnetic>
               Explore the work <ArrowDown />
@@ -159,20 +159,71 @@ export function Manifesto() {
           Design with <span className="accent">intent.</span>
         </p>
         <div className="stats">
-          <div>
-            <div className="stat-num"><span data-count="12">12</span><span className="accent">+</span></div>
-            <div className="stat-label">Years turning briefs into ideas</div>
-          </div>
-          <div>
-            <div className="stat-num"><span data-count="6">6</span></div>
-            <div className="stat-label">Disciplines, one starting point</div>
-          </div>
-          <div>
-            <div className="stat-num"><span data-count="1">1</span></div>
-            <div className="stat-label">Question: what are we really saying?</div>
-          </div>
+          {stats.map((st) => (
+            <div key={st.label}>
+              <div className="stat-num"><span data-count={st.value}>{st.value}</span>{st.suffix && <span className="accent">{st.suffix}</span>}</div>
+              <div className="stat-label">{st.label}</div>
+            </div>
+          ))}
         </div>
       </div>
+    </section>
+  );
+}
+
+export function NamedWork() {
+  return (
+    <section className="wrap named reveal" aria-label="Named work">
+      <p className="eyebrow">Named work</p>
+      <ul>
+        {namedWork.map((n) => (
+          <li key={n}>{n}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+export function Experience({ compact = false }: { compact?: boolean }) {
+  const items = compact ? experience.slice(0, 4) : experience;
+  return (
+    <section className="wrap section split" id="experience">
+      <div className="exp-side">
+        <p className="eyebrow">[{compact ? '05' : '02'}] — Where the work happened</p>
+        <h2 className="h-md" style={{ marginTop: 18, fontSize: 'clamp(34px, 3.4vw, 50px)' }}>
+          Agency, global media, <span className="accent" style={{ whiteSpace: 'nowrap' }}>in-house.</span>
+        </h2>
+        <p className="body" style={{ marginTop: 18, maxWidth: 360 }}>
+          Six companies since 2013 — from product design support to owning brand systems for a global real-estate portfolio.
+        </p>
+      </div>
+      <ol className="timeline" data-reveal>
+        <span className="timeline-fill" aria-hidden="true" />
+        {items.map((e, i) => (
+          <li key={e.company} className="reveal" style={{ transitionDelay: `${i * 90}ms` }}>
+            <span className="tl-dot" aria-hidden="true" />
+            <div className="tl-head">
+              <h3>{e.company}</h3>
+              {e.when && <span className="tl-when">{e.when}</span>}
+            </div>
+            <p className="tl-role">{e.role} · {e.meta}</p>
+            {!compact && (
+              <ul>
+                {e.points.map((pt) => (
+                  <li key={pt}>{pt}</li>
+                ))}
+              </ul>
+            )}
+            {compact && <p className="tl-point">{e.points[0]}</p>}
+          </li>
+        ))}
+        {compact && (
+          <li className="reveal tl-more">
+            <span className="tl-dot" aria-hidden="true" />
+            <Link href="/about#experience" className="btn btn-ghost">Full experience <ArrowUpRight /></Link>
+          </li>
+        )}
+      </ol>
     </section>
   );
 }
@@ -223,14 +274,14 @@ export function Process() {
       <div className="wrap section">
         <div className="process-head">
           <div>
-            <p className="eyebrow" style={{ marginBottom: 16 }}>[04] — How an idea earns its form</p>
+            <p className="eyebrow" style={{ marginBottom: 16 }}>[04] — Craft first. AI second.</p>
             <h2 className="h-md">
               From messy beginning
               <br />
               to <span className="accent">working system.</span>
             </h2>
           </div>
-          <p>The process starts long before Illustrator opens. The tools change. The thinking still comes first.</p>
+          <p>Start with the business problem. Generative tools — Firefly, Midjourney, Higgsfield, Kling — are for speed of exploration. The finish is still Adobe and Figma, with a human hand on type, spacing and the thing you cannot prompt.</p>
         </div>
         <div className="steps" data-reveal>
           <div className="steps-line" aria-hidden="true" />
@@ -260,22 +311,22 @@ export function AboutTeaser() {
         </div>
       </div>
       <div>
-        <p className="eyebrow" style={{ marginBottom: 22 }}>[05] — Hello, I’m Priyanka</p>
+        <p className="eyebrow" style={{ marginBottom: 22 }}>[06] — Hello, I’m Priyanka</p>
         <h2 className="h-md" style={{ fontSize: 'clamp(42px, 4.6vw, 64px)' }}>
           Curious mind.
           <br />
           Clear <span className="accent">intent.</span>
         </h2>
         <p className="lead" style={{ marginTop: 30, color: 'var(--fg)' }}>
-          A Senior Graphic Designer with 12+ years across branding, campaigns, digital and print. I give ideas a visual language.
+          {profile.summary}
         </p>
         <p className="body" style={{ marginTop: 18 }}>
-          I turn briefs, thoughts, problems—and sometimes very messy beginnings—into visual ideas that make sense. First I want to know what we’re trying to say, who we’re saying it to, and why anyone should care. Once that clicks, design gets interesting.
+          Recent work: multi-family property identity at Greystar, international campaign concepts at Omnicom Media Group, and Reckitt FMCG content for Vanish, Harpic and Mortein. Before the pixels: what are we trying to say, who are we saying it to, and why should anyone care?
         </p>
         <div className="grid-3" style={{ marginTop: 34, gap: 12 }}>
-          <div className="mini"><strong>Ideas earn form.</strong><span>Strategy before software.</span></div>
-          <div className="mini"><strong>Character sticks.</strong><span>A language people connect with.</span></div>
-          <div className="mini" style={{ borderColor: 'rgba(124,140,255,.4)' }}><strong>Always experimenting.</strong><span>AI, image-making, motion.</span></div>
+          <div className="mini"><strong>Present early.</strong><span>Stakeholders see direction, not surprises.</span></div>
+          <div className="mini"><strong>Protect the idea.</strong><span>One system across every channel.</span></div>
+          <div className="mini" style={{ borderColor: 'rgba(124,140,255,.4)' }}><strong>Ship on time.</strong><span>Remote, hybrid or in the room.</span></div>
         </div>
         <Link href="/about" className="btn btn-ghost" style={{ marginTop: 30 }} data-magnetic>
           Meet the designer <ArrowUpRight />
@@ -285,7 +336,7 @@ export function AboutTeaser() {
   );
 }
 
-export function ContactBlock({ heading = true }: { heading?: boolean }) {
+export function ContactBlock({ heading = true, showPhone = false }: { heading?: boolean; showPhone?: boolean }) {
   return (
     <section className="wrap" id="contact" style={{ paddingTop: 20, paddingBottom: 100 }}>
       <div className="cta-block reveal">
@@ -302,7 +353,7 @@ export function ContactBlock({ heading = true }: { heading?: boolean }) {
         <div style={{ position: 'relative' }}>
           <p className="eyebrow" style={{ marginBottom: 22 }}>
             <span className="dot" />
-            Open to creative-leadership roles &amp; select freelance briefs
+            Open to senior roles, retainers &amp; brand-system projects
           </p>
           {heading ? (
             <h2 className="disp" style={{ fontSize: 'clamp(44px, 5.4vw, 76px)', lineHeight: 0.96, letterSpacing: '-0.04em', fontWeight: 800 }}>
@@ -322,11 +373,19 @@ export function ContactBlock({ heading = true }: { heading?: boolean }) {
             </h1>
           )}
           <p style={{ marginTop: 28, fontSize: 18, lineHeight: 1.55, maxWidth: 420, color: '#2a0e09' }}>
-            Tell me what you’re trying to say. We’ll work out how it should look.
+            Tell me what you’re trying to say. We’ll work out how it should look. {profile.location} — {profile.availability.toLowerCase()}.
           </p>
-          <a href={INSTAGRAM} target="_blank" rel="noreferrer" className="btn btn-dark" style={{ marginTop: 32 }} data-magnetic>
-            <Instagram /> @ps.graphiq
-          </a>
+          <a href={`mailto:${profile.email}`} className="cta-mail" data-magnetic>{profile.email}</a>
+          {showPhone && (
+            <p style={{ marginTop: 12, fontWeight: 600 }}>
+              <a href={`tel:${profile.phone.replace(/\s/g, '')}`}>{profile.phone}</a> · {profile.location}
+            </p>
+          )}
+          <div className="cta-links">
+            <a href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
+            <a href={links.behance} target="_blank" rel="noreferrer">Behance ↗</a>
+            <a href={links.instagram} target="_blank" rel="noreferrer"><Instagram /> {links.instagramHandle}</a>
+          </div>
         </div>
         <EnquiryForm />
       </div>

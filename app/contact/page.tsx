@@ -2,7 +2,7 @@ import { Ambient, ContactBlock } from '../../components/sections';
 
 export const metadata = {
   title: 'Contact',
-  description: 'Discuss a design project, creative role or collaboration with Priyanka Sharma.',
+  description: 'Hire or brief Priyanka Sharma, Senior Graphic Designer in Gurgaon — open to relocation, remote and hybrid roles, retainers and brand-system projects.',
 };
 
 export default function Contact() {
@@ -10,7 +10,7 @@ export default function Contact() {
     <main id="main" style={{ position: 'relative', paddingTop: 48 }}>
       <Ambient />
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <ContactBlock heading={false} />
+        <ContactBlock heading={false} showPhone />
       </div>
     </main>
   );

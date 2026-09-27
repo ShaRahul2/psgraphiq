@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { profile } from '../lib/projects';
 
 /**
- * Enquiry form. There is no mail service connected yet, so on submit it
- * downloads the brief as a text file (same behaviour as the previous site).
- * Swap `handleSubmit` for a real endpoint once a destination address is chosen.
+ * Enquiry form. With no mail service connected, submitting opens the
+ * visitor's email app with the brief already written, addressed to Priyanka.
+ * Swap `handleSubmit` for a form endpoint later if you want in-page sending.
  */
 export default function EnquiryForm() {
   const [status, setStatus] = useState('');
@@ -13,14 +14,14 @@ export default function EnquiryForm() {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const v = new FormData(event.currentTarget);
-    const text = `Project enquiry\n\nName: ${v.get('first')} ${v.get('last')}\nEmail: ${v.get('email')}\nPhone: ${v.get('phone')}\n\n${v.get('message')}`;
-    const url = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'project-enquiry.txt';
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    setStatus('Your brief has been downloaded (not sent). Share it on Instagram or by email.');
+    const name = `${v.get('first') ?? ''} ${v.get('last') ?? ''}`.trim();
+    const subject = `Project enquiry from ${name || 'the website'}`;
+    const lines = [`Name: ${name}`, `Email: ${v.get('email') ?? ''}`];
+    if (v.get('phone')) lines.push(`Phone: ${v.get('phone')}`);
+    lines.push(`About: ${v.get('type') ?? ''}`, '', String(v.get('message') ?? ''));
+    const body = lines.join('\n');
+    window.location.href = `mailto:${profile.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setStatus(`Your email app should open with the brief ready to send. If it doesn’t, write to ${profile.email}.`);
   }
 
   return (
@@ -41,14 +42,23 @@ export default function EnquiryForm() {
         Phone
         <input name="phone" type="tel" autoComplete="tel" maxLength={40} />
       </label>
+      <fieldset className="full types">
+        <legend>What’s this about?</legend>
+        {['Full-time role', 'Freelance / retainer', 'Brand system', 'Campaign'].map((t, i) => (
+          <label key={t} className="type-chip">
+            <input type="radio" name="type" value={t} defaultChecked={i === 0} />
+            <span>{t}</span>
+          </label>
+        ))}
+      </fieldset>
       <label className="full">
         What are we really trying to say? <span className="req">*</span>
-        <textarea name="message" rows={4} required maxLength={5000} placeholder="The idea, the challenge, the timeline…" />
+        <textarea name="message" rows={4} required maxLength={3000} placeholder="The idea, the challenge, the timeline…" />
       </label>
-      <p className="form-note full">This form doesn’t send messages yet — it downloads your brief so you can share it.</p>
       <button type="submit" className="btn btn-accent full" data-magnetic style={{ justifyContent: 'center' }}>
-        Download the brief →
+        Send the brief →
       </button>
+      <p className="form-note full">Opens your email app with everything filled in — nothing is stored on this site.</p>
       <p className="status full" role="status">{status}</p>
     </form>
   );

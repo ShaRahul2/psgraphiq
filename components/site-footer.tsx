@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { INSTAGRAM } from '../lib/projects';
+import { links, profile } from '../lib/projects';
 
 export default function SiteFooter() {
   return (
@@ -12,13 +12,16 @@ export default function SiteFooter() {
             ))}
           </div>
           <div className="foot-row">
-            <span className="mono" style={{ letterSpacing: 1.5 }}>© PRIYANKA SHARMA — DESIGN WITH INTENT</span>
+            <span className="mono" style={{ letterSpacing: 1.5 }}>© PRIYANKA SHARMA — SENIOR GRAPHIC DESIGNER — GURGAON</span>
             <nav aria-label="Footer">
               <Link href="/#work">Work</Link>
               <Link href="/work/meloni">Meloni case study</Link>
               <Link href="/about">About</Link>
               <Link href="/contact">Contact</Link>
-              <a href={INSTAGRAM} target="_blank" rel="noreferrer">Instagram ↗</a>
+              <a href={`mailto:${profile.email}`}>Email</a>
+              <a href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
+              <a href={links.behance} target="_blank" rel="noreferrer">Behance ↗</a>
+              <a href={links.instagram} target="_blank" rel="noreferrer">Instagram ↗</a>
               <a href="#top">Back to top ↑</a>
             </nav>
           </div>

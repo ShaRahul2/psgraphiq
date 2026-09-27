@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { projects, type Category } from '../lib/projects';
+import { projectIndex, projects, projectTotal, type Category } from '../lib/projects';
 import { ArrowUpRight, ChevronLeft, ChevronRight, Close } from './icons';
 
-const filters: ('All' | Category)[] = ['All', 'Identity', 'Packaging', 'Product'];
+const filters: ('All' | Category)[] = ['All', 'Identity', 'Campaign', 'Packaging', 'Product', 'Pitch'];
 
 function tilt(e: React.PointerEvent<HTMLElement>) {
   if (e.pointerType !== 'mouse') return;
@@ -76,15 +76,16 @@ export default function WorkGallery() {
       </div>
 
       <div className="work-grid">
-        {shown.map((p) => {
+        {shown.map((p, n) => {
           const i = projects.indexOf(p);
+          const featured = filter === 'All' && n === 0;
           return (
-            <article key={p.slug} className="card" onPointerMove={tilt} onPointerLeave={untilt}>
+            <article key={p.slug} className={`card${featured ? ' card-featured' : ''}${p.format === 'board' ? ' card-board' : ''}`} onPointerMove={tilt} onPointerLeave={untilt}>
               <div className="card-media reveal-clip" style={{ background: p.color }}>
                 <img src={`/images/${p.image}`} alt={p.alt} loading="lazy" width={1080} height={1080} />
                 <div className="shine" />
                 <button type="button" className="card-hit" onClick={() => setOpen(i)} aria-label={`View ${p.name} artwork full screen`} />
-                <span className="pill" style={{ left: 18 }}>{p.index} / 04</span>
+                <span className="pill" style={{ left: 18 }}>{projectIndex(p)} / {projectTotal}</span>
                 <span className="pill" style={{ right: 18 }}>{p.tag}</span>
                 <span className="view-tag" aria-hidden="true">VIEW ⤢</span>
               </div>
@@ -98,7 +99,7 @@ export default function WorkGallery() {
                     <ArrowUpRight />
                   </Link>
                 ) : (
-                  <Link href={`/work/${p.slug}`} className="soft-tag">DETAILS ↗</Link>
+                  <Link href={`/work/${p.slug}`} className="soft-tag">PROJECT ↗</Link>
                 )}
               </div>
             </article>
@@ -109,11 +110,11 @@ export default function WorkGallery() {
       {lb && (
         <div className="lightbox" role="dialog" aria-modal="true" aria-label={`${lb.name} artwork`} onClick={(e) => e.target === e.currentTarget && close()}>
           <div className="lb-inner">
-            <div className="lb-media" style={{ background: lb.color }}>
+            <div className="lb-media" style={{ background: lb.color, aspectRatio: lb.format === 'board' ? '3 / 2' : '1 / 1' }}>
               <img src={`/images/${lb.image}`} alt={lb.alt} />
             </div>
             <div>
-              <p className="eyebrow" style={{ marginBottom: 14 }}>{lb.index} / 04 — {lb.tag}</p>
+              <p className="eyebrow" style={{ marginBottom: 14 }}>{projectIndex(lb)} / {projectTotal} — {lb.tag}</p>
               <h2 className="h-lg" style={{ fontSize: 'clamp(40px, 4.5vw, 64px)' }}>
                 {lb.name}<span className="accent">.</span>
               </h2>
@@ -123,7 +124,7 @@ export default function WorkGallery() {
                 <button type="button" className="icon-btn" onClick={prev} aria-label="Previous project"><ChevronLeft /></button>
                 <button type="button" className="icon-btn" onClick={next} aria-label="Next project"><ChevronRight /></button>
                 <Link href={`/work/${lb.slug}`} className="btn btn-accent" onClick={close}>
-                  {lb.hasCaseStudy ? 'Read the case study' : 'Project details'} <ArrowUpRight />
+                  {lb.hasCaseStudy ? 'Read the case study' : 'Open the project'} <ArrowUpRight />
                 </Link>
               </div>
             </div>

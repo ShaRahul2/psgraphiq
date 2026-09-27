@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { projects } from '../../../lib/projects';
+import { projectIndex, projects, projectTotal } from '../../../lib/projects';
 import { ArrowLeft, ArrowUpRight, TextBadge } from '../../../components/icons';
 import { ContactBlock } from '../../../components/sections';
 
@@ -31,6 +31,21 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const isMeloni = p.slug === 'meloni';
   const tint = isMeloni ? 'var(--lime)' : 'var(--accent)';
   const words = p.name.split(' ');
+  const isBoard = p.format === 'board';
+  const Title = (
+    <h1 className="case-title">
+      {words.map((w, wi) => (
+        <span key={wi} className="line">
+          <span style={wi === words.length - 1 ? { color: tint } : undefined}>
+            {w.split('').map((c, ci) => (
+              <span key={ci} className="ltr">{c}</span>
+            ))}
+            {wi === words.length - 1 ? '.' : ''}
+          </span>
+        </span>
+      ))}
+    </h1>
+  );
 
   return (
     <main id="main" style={{ position: 'relative', ['--tint' as string]: tint } as React.CSSProperties}>
@@ -41,11 +56,43 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           <Link href="/#work"><ArrowLeft className="w-4 h-4" /> All work</Link>
           <span className="spacer" />
           <span className="mono hide-sm" style={{ letterSpacing: 1.5 }}>{p.category.toUpperCase()}</span>
-          <span className="mono" style={{ letterSpacing: 1.5, color: tint }}>{p.index} / {String(projects.length).padStart(2, '0')}</span>
+          <span className="mono" style={{ letterSpacing: 1.5, color: tint }}>{projectIndex(p)} / {projectTotal}</span>
         </div>
       </div>
 
-      {/* Hero */}
+{isBoard ? (
+      <section className="wrap" style={{ paddingTop: 56, position: 'relative' }}>
+        <div className="fitbox">
+          <p className="eyebrow" style={{ marginBottom: 22 }}>{p.category}</p>
+          {Title}
+        </div>
+        <a className="board-hero reveal-clip" href={`/images/${p.image}`} target="_blank" rel="noreferrer" style={{ display: 'block', marginTop: 40, background: p.color }} aria-label={`Open the ${p.name} board at full size`}>
+          <img src={`/images/${p.image}`} alt={p.alt} width={1168} height={784} fetchPriority="high" />
+        </a>
+        <div className="board-grid">
+          <div>
+            <p className="disp" style={{ fontSize: 'clamp(24px, 2.4vw, 34px)', lineHeight: 1.15, letterSpacing: '-1px', fontWeight: 700 }}>{p.headline}</p>
+            <dl className="facts" style={{ marginTop: 28 }}>
+              {p.facts.map(([k, v]) => (
+                <div key={k}>
+                  <dt>{k}</dt>
+                  <dd>{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <div className="reveal">
+            <p className="lead" style={{ color: 'var(--fg)' }}>{p.description}</p>
+            {p.body.map((para) => (
+              <p key={para} className="body" style={{ marginTop: 18 }}>{para}</p>
+            ))}
+            {p.note && (
+              <p className="honest"><b>ABOUT THIS BOARD</b><span>{p.note}</span></p>
+            )}
+          </div>
+        </div>
+      </section>
+      ) : (
       <section className="wrap case-hero">
         {isMeloni && (
           <div className="seeds" aria-hidden="true">
@@ -55,23 +102,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           </div>
         )}
         <div className="fitbox" style={{ position: 'relative' }}>
-          <p className="eyebrow" style={{ marginBottom: 26 }}>Case study — {p.details[0][1]}</p>
-          <h1 className="case-title">
-            {words.map((w, wi) => (
-              <span key={wi} className="line">
-                <span style={wi === words.length - 1 ? { color: tint } : undefined}>
-                  {w.split('').map((c, ci) => (
-                    <span key={ci} className="ltr">{c}</span>
-                  ))}
-                  {wi === words.length - 1 ? '.' : ''}
-                </span>
-              </span>
-            ))}
-          </h1>
+          <p className="eyebrow" style={{ marginBottom: 26 }}>{isMeloni ? 'Case study — self-initiated concept' : p.category}</p>
+          {Title}
           <p className="disp" style={{ marginTop: 34, fontSize: 'clamp(24px, 2.4vw, 32px)', lineHeight: 1.15, letterSpacing: '-1px', fontWeight: 700, maxWidth: 480 }}>{p.headline}</p>
           <p className="body" style={{ marginTop: 18, fontSize: 17, maxWidth: 500 }}>{p.description}</p>
           <dl className="details">
-            {p.details.map(([k, v]) => (
+            {p.facts.map(([k, v]) => (
               <div key={k}>
                 <dt>{k}</dt>
                 <dd>{v}</dd>
@@ -92,6 +128,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           )}
         </div>
       </section>
+      )}
 
       {isMeloni ? (
         <>
@@ -164,11 +201,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             </div>
           </section>
         </>
-      ) : (
+      ) : isBoard ? null : (
         <section className="wrap section split" style={{ borderTop: '1px solid var(--line)' }}>
           <p className="eyebrow">A closer look</p>
           <div className="reveal">
-            <p className="lead" style={{ fontSize: 'clamp(20px, 2vw, 28px)', color: 'var(--fg)', maxWidth: 820 }}>{p.closer}</p>
+            <p className="lead" style={{ fontSize: 'clamp(20px, 2vw, 28px)', color: 'var(--fg)', maxWidth: 820 }}>{p.body[0]}</p>
             <p className="body" style={{ marginTop: 20, maxWidth: 680 }}>
               The full case study for {p.name} is on its way. In the meantime, open the original artwork, or get in touch to talk through the thinking behind it.
             </p>

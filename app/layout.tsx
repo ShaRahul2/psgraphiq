@@ -6,9 +6,9 @@ import './globals.css';
 
 export const metadata: Metadata = {
   icons: { icon: '/favicon.svg' },
-  title: { default: 'PS Graphiq — Priyanka Sharma, Brand & Visual Designer', template: '%s — PS Graphiq' },
+  title: { default: 'PS Graphiq — Priyanka Sharma, Senior Graphic Designer', template: '%s — PS Graphiq' },
   description:
-    'Ideas that still work once they leave the mood board. Brand identities, packaging, campaigns and visual design by Priyanka Sharma — 12+ years of design with intent.',
+    'Priyanka Sharma, Senior Graphic Designer in Gurgaon — brand systems, campaign design and motion. 12+ years across Greystar, Omnicom Media Group and Reckitt brands. Open to relocation.',
   openGraph: {
     title: 'PS Graphiq — Design with intent',
     description: 'Brand identities, packaging and campaigns by Priyanka Sharma.',
