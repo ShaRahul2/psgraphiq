@@ -19,7 +19,18 @@ export type Project = {
   /** Honest note about what the image is (shown on the project page). */
   note?: string;
   hasCaseStudy: boolean;
+  /** Horizontal focal point for square grid tiles, e.g. '30%' (boards are wider than tiles). */
+  focus?: string;
+  /** Pixel size of the full image — used for detail crops. */
+  size: [number, number];
+  /** Close-up regions of the full image shown as "In detail" on the project page: [x, y, w, h] in image pixels. */
+  crops?: { label: string; box: [number, number, number, number] }[];
+  /** Optional short muted loop (MP4 in /public/video) — plays on the grid tile when in view. */
+  video?: string;
 };
+
+/** Small (760px) variant used in the grid. */
+export const thumb = (image: string) => image.replace(/\.webp$/, '-sm.webp');
 
 /* Order = order on the site. Index numbers are derived from position. */
 export const projects: Project[] = [
@@ -30,6 +41,7 @@ export const projects: Project[] = [
     cats: ['Identity', 'Packaging'],
     category: 'Brand identity · Packaging',
     image: 'meloni-pack.webp',
+    size: [1080, 1080],
     format: 'square',
     color: '#c8d245',
     alt: 'Meloni Kiss watermelon wine packaging',
@@ -51,6 +63,15 @@ export const projects: Project[] = [
     cats: ['Identity'],
     category: 'Brand identity · Built from a blank page',
     image: 'board-gennex.webp',
+    size: [1168, 709],
+    focus: '50%',
+    crops: [
+      { label: 'Logo lockup', box: [330, 20, 520, 200] },
+      { label: 'The N-mark', box: [880, 30, 270, 270] },
+      { label: 'Business cards', box: [10, 470, 460, 237] },
+      { label: 'Letterhead', box: [480, 320, 350, 387] },
+      { label: 'Woven fabric tag', box: [860, 330, 290, 377] },
+    ],
     format: 'board',
     color: '#efe9df',
     alt: 'Gen-Nex India identity board: N-mark, logo lockup, palette of ink, burnt saffron and brushed brass, business cards, letterhead and fabric tag',
@@ -76,6 +97,14 @@ export const projects: Project[] = [
     cats: ['Identity'],
     category: 'Brand systems · Multi-family real estate',
     image: 'board-rowan.webp',
+    size: [1168, 709],
+    focus: '8%',
+    crops: [
+      { label: 'Wordmark & positioning', box: [0, 20, 420, 400] },
+      { label: 'Resident brochure', box: [440, 0, 710, 440] },
+      { label: 'Palette & materials', box: [0, 450, 400, 257] },
+      { label: 'Resident keycard', box: [800, 450, 350, 250] },
+    ],
     format: 'board',
     color: '#efeae2',
     alt: 'Rowan House presentation board: serif wordmark, resident brochure, warm oak, limestone and sage material palette, architectural photography and a resident keycard',
@@ -101,6 +130,13 @@ export const projects: Project[] = [
     cats: ['Campaign'],
     category: 'Campaign · Email, digital & social motion',
     image: 'board-lumina.webp',
+    size: [1168, 709],
+    focus: '28%',
+    crops: [
+      { label: 'Pack', box: [0, 0, 380, 707] },
+      { label: 'Social story', box: [370, 90, 260, 540] },
+      { label: 'Web banner', box: [640, 110, 470, 420] },
+    ],
     format: 'board',
     color: '#eef1ec',
     alt: 'Lumina Fresh campaign board: laundry bottle, social story and web banner with limes and water splash',
@@ -125,6 +161,13 @@ export const projects: Project[] = [
     cats: ['Campaign'],
     category: 'Campaign concept · Global media',
     image: 'board-ambition.webp',
+    size: [1168, 709],
+    focus: '30%',
+    crops: [
+      { label: 'Outdoor', box: [20, 70, 640, 440] },
+      { label: 'Magazine spread', box: [650, 60, 500, 380] },
+      { label: 'Mobile', box: [760, 370, 300, 337] },
+    ],
     format: 'board',
     color: '#141210',
     alt: 'Theatre of Ambition campaign board: “Ambition deserves a stage” on a billboard, a magazine spread and a phone screen, lit by a spotlight',
@@ -149,6 +192,13 @@ export const projects: Project[] = [
     cats: ['Pitch'],
     category: 'Pitch decks · Templates · Motion frames',
     image: 'board-pitch.webp',
+    size: [1168, 709],
+    focus: '18%',
+    crops: [
+      { label: 'Pitch deck', box: [50, 120, 670, 480] },
+      { label: 'Leave-behind', box: [580, 170, 470, 400] },
+      { label: 'GIF storyboard', box: [370, 470, 630, 237] },
+    ],
     format: 'board',
     color: '#e9ded2',
     alt: 'Agency pitch deck “The next chapter” on a laptop, a printed leave-behind and a four-frame GIF storyboard',
@@ -172,6 +222,7 @@ export const projects: Project[] = [
     cats: ['Identity'],
     category: 'Identity · Character design',
     image: 'olio.webp',
+    size: [1500, 1500],
     format: 'square',
     color: '#f1ece0',
     alt: 'OLIO orange wordmark with two expressive black-and-white characters',
@@ -193,6 +244,7 @@ export const projects: Project[] = [
     cats: ['Product'],
     category: 'Beauty · Product visuals',
     image: 'recode.webp',
+    size: [1500, 1500],
     format: 'square',
     color: '#bac9e7',
     alt: 'Recode orange beauty product on a cool blue foam backdrop',
@@ -214,6 +266,7 @@ export const projects: Project[] = [
     cats: ['Packaging'],
     category: 'Packaging · Visual identity',
     image: 'wilddoor.webp',
+    size: [1500, 1500],
     format: 'square',
     color: '#d7d8b5',
     alt: 'Wilddoor illustrated green packaging among natural textures',

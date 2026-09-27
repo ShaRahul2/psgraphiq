@@ -4,6 +4,7 @@ import { ArrowUpRight, TextBadge } from '../../components/icons';
 import { education, languages, links, profile, toolGroups } from '../../lib/projects';
 
 export const metadata = {
+  alternates: { canonical: '/about' },
   title: 'About',
   description:
     'Priyanka Sharma — Senior Graphic Designer, Gurgaon. 12+ years of brand systems, campaign design and motion across Greystar, Omnicom Media Group and Reckitt brands.',
@@ -86,7 +87,7 @@ export default function About() {
           <h2 className="h-md" style={{ marginTop: 18 }}>
             Adobe hands. <span className="outline">AI speed.</span>
           </h2>
-          <div className="frame reveal-clip" style={{ marginTop: 28, aspectRatio: '3 / 2', maxWidth: 440 }}>
+          <div className="frame reveal-clip" style={{ marginTop: 28, aspectRatio: '1168 / 709', maxWidth: 440 }}>
             <img src="/images/board-hero.webp" alt="PS monogram notebook on a desk with paper stock, a brass ruler and a marigold" loading="lazy" />
           </div>
         </div>

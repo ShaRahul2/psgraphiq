@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { projectIndex, projects, projectTotal } from '../../../lib/projects';
 import { ArrowLeft, ArrowUpRight, TextBadge } from '../../../components/icons';
 import { ContactBlock } from '../../../components/sections';
+import ZoomImage from '../../../components/zoom-image';
+import { workJsonLd } from '../../../lib/site';
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -11,7 +13,14 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const p = projects.find((x) => x.slug === slug);
-  return { title: p?.name ?? 'Project not found', description: p?.description };
+  if (!p) return { title: 'Project not found' };
+  return {
+    title: `${p.name} — ${p.category}`,
+    description: `${p.headline} ${p.description}`,
+    alternates: { canonical: `/work/${p.slug}` },
+    openGraph: { type: 'article', title: `${p.name} — Priyanka Sharma`, description: p.headline, images: [{ url: `/images/${p.image}`, width: p.size[0], height: p.size[1], alt: p.alt }] },
+    twitter: { card: 'summary_large_image', title: `${p.name} — Priyanka Sharma`, images: [`/images/${p.image}`] },
+  };
 }
 
 const seeds = (() => {
@@ -49,6 +58,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   return (
     <main id="main" style={{ position: 'relative', ['--tint' as string]: tint } as React.CSSProperties}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(workJsonLd(p.slug)) }} />
       <div className="orb float" aria-hidden="true" style={{ top: 80, right: -140, width: 560, height: 560, background: tint, opacity: 0.09 }} />
 
       <div className="wrap">
@@ -66,9 +76,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           <p className="eyebrow" style={{ marginBottom: 22 }}>{p.category}</p>
           {Title}
         </div>
-        <a className="board-hero reveal-clip" href={`/images/${p.image}`} target="_blank" rel="noreferrer" style={{ display: 'block', marginTop: 40, background: p.color }} aria-label={`Open the ${p.name} board at full size`}>
-          <img src={`/images/${p.image}`} alt={p.alt} width={1168} height={784} fetchPriority="high" />
-        </a>
+        <ZoomImage className="board-hero reveal-clip" style={{ marginTop: 40, background: p.color }} src={`/images/${p.image}`} alt={p.alt} width={p.size[0]} height={p.size[1]} priority />
         <div className="board-grid">
           <div>
             <p className="disp" style={{ fontSize: 'clamp(24px, 2.4vw, 34px)', lineHeight: 1.15, letterSpacing: '-1px', fontWeight: 700 }}>{p.headline}</p>
@@ -120,14 +128,45 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             <circle cx="300" cy="300" r="290" stroke={tint} strokeOpacity={0.35} strokeDasharray="2 10" />
             <circle cx="300" cy="10" r="7" fill={tint} />
           </svg>
-          <a className="case-cover float" href={`/images/${p.image}`} target="_blank" rel="noreferrer" style={{ background: p.color }} aria-label={`Open ${p.name} artwork at full size`}>
-            <img src={`/images/${p.image}`} alt={p.alt} width={1080} height={1080} fetchPriority="high" />
-          </a>
+          <ZoomImage className="case-cover float" style={{ background: p.color }} src={`/images/${p.image}`} alt={p.alt} width={p.size[0]} height={p.size[1]} priority />
           {isMeloni && (
             <TextBadge id="badge-meloni" text="WATERMELON WINE ✳ MELONI KISS ✳ " fill="#1f4a2e" ink="#d4f24a" center="#d4f24a" style={{ position: 'absolute', left: 20, bottom: 40, width: 160, height: 160, zIndex: 3 }} />
           )}
         </div>
       </section>
+      )}
+
+      {p.crops && p.crops.length > 0 && (
+        <section className="wrap" style={{ paddingTop: 90, paddingBottom: 50 }}>
+          <div className="section-head" style={{ marginBottom: 28 }}>
+            <div>
+              <p className="eyebrow" style={{ marginBottom: 14 }}>In detail — {p.crops.length} close-ups</p>
+              <h2 className="h-md">Look closer<span className="accent">.</span></h2>
+            </div>
+            <p className="body" style={{ maxWidth: 340 }}>Type, material and layout decisions, pulled out of the board. Click the board above to zoom anywhere.</p>
+          </div>
+          <div className="crops">
+            {p.crops.map((c, i) => {
+              const [x, y, w, h] = c.box;
+              const r = w / h;
+              const span = r > 2 ? 'crop-full' : r >= 1.2 ? 'crop-mid' : 'crop-narrow';
+              return (
+                <figure key={c.label} className={`crop reveal ${span}`} style={{ transitionDelay: `${(i % 3) * 90}ms` }}>
+                  <div className="crop-frame" style={{ aspectRatio: `${w} / ${h}` }}>
+                    <img
+                      src={`/images/${p.image}`}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      style={{ width: `${((p.size[0] / w) * 100).toFixed(2)}%`, left: `${((-x / w) * 100).toFixed(2)}%`, top: `${((-y / h) * 100).toFixed(2)}%`, ['--ox' as string]: `${(((x + w / 2) / p.size[0]) * 100).toFixed(1)}%`, ['--oy' as string]: `${(((y + h / 2) / p.size[1]) * 100).toFixed(1)}%` } as React.CSSProperties}
+                    />
+                  </div>
+                  <figcaption><b>{String(i + 1).padStart(2, '0')}</b>{c.label}</figcaption>
+                </figure>
+              );
+            })}
+          </div>
+        </section>
       )}
 
       {isMeloni ? (
