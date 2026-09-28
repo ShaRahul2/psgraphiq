@@ -4,6 +4,7 @@ import SiteFooter from '../components/site-footer';
 import { Effects } from '../components/effects';
 import { SITE_URL, personJsonLd } from '../lib/site';
 import './globals.css';
+import './work.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
